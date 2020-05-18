@@ -6,8 +6,15 @@ var io = require('socket.io')(http)
 
 app.use(express.static(__dirname + '/public'))
 
-io.on('connection', () => {
+io.on('connection', (socket) => {
     console.log("user conected on socket")
+    socket.on('message', (message) => {
+        console.log("Message recieved: " + message.text)
+        socket.broadcast.emit('message',message)
+    })
+    socket.emit('message', {
+        text:'Welcome to chat Application!'
+    })
 })
 
 
