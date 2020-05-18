@@ -22,14 +22,16 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    console.log("disconnect");
     var userData = clientInfo[socket.id];
     if (typeof userData !== undefined) {
-      socket.leave(userData.room);
-      io.to(userData.room).emit({
+      io.to(userData.room).emit("message", {
         name: "System",
         text: userData.name + " has left the room",
         timestamp: moment().valueOf(),
       });
+      socket.leave(userData.room);
+      delete clientInfo[socket.id];
     }
   });
 
