@@ -21,6 +21,18 @@ io.on("connection", (socket) => {
     });
   });
 
+  socket.on("disconnect", () => {
+    var userData = clientInfo[socket.id];
+    if (typeof userData !== undefined) {
+      socket.leave(userData.room);
+      io.to(userData.room).emit({
+        name: "System",
+        text: userData.name + " has left the room",
+        timestamp: moment().valueOf(),
+      });
+    }
+  });
+
   socket.on("message", (message) => {
     console.log("Message recieved: " + message.text + " from " + message.name);
     message.timestamp = moment().valueOf();
